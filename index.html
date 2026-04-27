@@ -555,7 +555,7 @@ function initThree(){
   scene.background=new THREE.Color(0x000000);
 
   const camera=new THREE.PerspectiveCamera(42,W/H,0.01,1000);
-  camera.position.set(0,0.5,3.5);
+  camera.position.set(0.6,0.8,3.5);
 
   // Single dramatic spotlight — top right
   const spot=new THREE.SpotLight(0xffffff,6);
@@ -570,8 +570,18 @@ function initThree(){
   scene.add(spot);
   scene.add(spot.target);
 
+  // Rim light from left to catch the other side
+  const rim=new THREE.SpotLight(0xffffff,2.5);
+  rim.position.set(-5,3,-2);
+  rim.angle=Math.PI/6;
+  rim.penumbra=0.6;
+  rim.decay=2;
+  rim.distance=25;
+  scene.add(rim);
+  scene.add(rim.target);
+
   // Tiny fill light opposite side — keeps shadows from going totally black
-  const fill=new THREE.PointLight(0x334466,0.4,20);
+  const fill=new THREE.PointLight(0x334466,0.8,20);
   fill.position.set(-4,-2,-3);
   scene.add(fill);
 
@@ -587,6 +597,7 @@ function initThree(){
     const scale=1.8/maxDim;
     model.scale.setScalar(scale);
     model.position.sub(center.multiplyScalar(scale));
+    model.position.y+=0.3;
 
     // Apply metallic material to all meshes
     model.traverse(child=>{
