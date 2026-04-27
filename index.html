@@ -158,6 +158,8 @@ footer p{color:#333;font-size:0.78rem;letter-spacing:0.04em}
   .exp-item,.pub-item{grid-template-columns:1fr;gap:0.6rem}
   .fara-back,.fara-content{padding-left:1.5rem;padding-right:1.5rem}
   .fara-content{padding-bottom:3rem}
+  .fara-canvas-wrap{display:none!important}
+  #fara-loader{display:none!important}
 }
 </style>
 </head>
@@ -194,7 +196,7 @@ footer p{color:#333;font-size:0.78rem;letter-spacing:0.04em}
 
   <!-- Headshot — upload headshot.jpg to GitHub repo -->
   <img id="hero-headshot" src="./headshot.jpg" alt="Cedric Levi"
-    style="position:absolute;right:4rem;bottom:0;height:74%;max-height:610px;object-fit:cover;object-position:top;z-index:1;opacity:0.92;mask-image:linear-gradient(to top,transparent 0%,black 22%),linear-gradient(to left,transparent 0%,black 12%),linear-gradient(to right,transparent 0%,black 12%);-webkit-mask-image:linear-gradient(to top,transparent 0%,black 22%);mask-composite:intersect;-webkit-mask-composite:destination-in"
+    style="position:absolute;right:4rem;top:50%;transform:translateY(-50%);height:74%;max-height:610px;object-fit:cover;object-position:top;z-index:1;opacity:0.92;mask-image:linear-gradient(to top,transparent 0%,black 22%),linear-gradient(to bottom,transparent 0%,black 22%);-webkit-mask-image:linear-gradient(to top,transparent 0%,black 22%);mask-composite:intersect;-webkit-mask-composite:destination-in"
     onerror="this.style.display='none'"/>
 </section>
 
@@ -567,28 +569,29 @@ function initThree(){
   camera.position.set(1.2,0.4,3.5);
   camera.lookAt(0.8,0,0);
 
+  const viewW=window.innerWidth;
+  const rightOffset=viewW*0.17;
+  camera.setViewOffset(viewW,H,-(rightOffset),0,viewW,H);
   camera.position.set(0,0.2,3.8);
-  camera.lookAt(0.9,0,0);
+  camera.lookAt(0,0,0);
 
-  const spot=new THREE.SpotLight(0xffffff,5);
-  spot.position.set(4,5,3);
+  const spot=new THREE.SpotLight(0xffffff,3.5);
+  spot.position.set(3,4,3);
   spot.angle=Math.PI/6;
-  spot.penumbra=0.5;
-  spot.decay=1.5;
+  spot.penumbra=0.55;
+  spot.decay=1.4;
   spot.distance=30;
   spot.castShadow=true;
   spot.shadow.mapSize.width=2048;
   spot.shadow.mapSize.height=2048;
   scene.add(spot);
   scene.add(spot.target);
-  spot.target.position.set(0.9,0,0);
-  spot.target.updateMatrixWorld();
 
-  const back=new THREE.PointLight(0x8899bb,1.2,20);
+  const back=new THREE.PointLight(0x6677aa,0.9,20);
   back.position.set(-3,2,-4);
   scene.add(back);
 
-  const fill=new THREE.PointLight(0x223355,0.5,15);
+  const fill=new THREE.PointLight(0x223355,0.4,15);
   fill.position.set(-3,-1,2);
   scene.add(fill);
 
@@ -602,7 +605,6 @@ function initThree(){
     const scale=1.8/maxDim;
     model.scale.setScalar(scale);
     model.position.sub(center.multiplyScalar(scale));
-    model.position.x+=0.9;
     model.position.y+=0.15;
 
     model.traverse(child=>{
